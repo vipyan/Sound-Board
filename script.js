@@ -1,7 +1,12 @@
 const songs = ['Cinematic', 'Classical', 'Hip-hop', 'Pop'];
 const pause = document.getElementById('pause');
 
+// Set initial text
+pause.innerText = "Please select a song"; 
+
+
 let currentlyPlaying = null; // To track the currently playing song
+let isPaused = false; // Track if a song is paused
 
 songs.forEach(song => {
     const btn = document.createElement('button');
@@ -14,14 +19,15 @@ songs.forEach(song => {
         if (currentlyPlaying === audio) {
             // If the clicked song is already playing, pause it
             audio.pause();
-            currentlyPlaying = null;
-            pause.innerText = "Play"; // Change button text to Play
+            isPaused = true;
+            pause.innerText = `Play ${currentlyPlaying.id}`;
         } else {
             // Pause the currently playing song if it's different
             stopSongs();
             audio.play();
             currentlyPlaying = audio;
-            pause.innerText = "Pause"; // Change button text to Pause
+            isPaused = false;
+            pause.innerText = `Pause ${currentlyPlaying.id}`;
         }
     });
 
@@ -31,16 +37,16 @@ songs.forEach(song => {
 // Pause button functionality
 pause.addEventListener('click', () => {
     if (currentlyPlaying) {
-        currentlyPlaying.pause();
-        currentlyPlaying = null;
-        pause.innerText = "Play"; // Change button text to Play
-    } else {
-        // If no song is playing, restart the last played song
-        if (songs.length > 0) {
-            const lastSong = document.getElementById(songs[0]);
-            lastSong.play();
-            currentlyPlaying = lastSong;
-            pause.innerText = "Pause"; // Change button text to Pause
+        if (!isPaused) {
+            // Pause the song
+            currentlyPlaying.pause();
+            isPaused = true;
+            pause.innerText = `Play ${currentlyPlaying.id}`;
+        } else {
+            // Resume the last played song
+            currentlyPlaying.play();
+            isPaused = false;
+            pause.innerText = `Pause ${currentlyPlaying.id}`;
         }
     }
 });
@@ -52,4 +58,3 @@ function stopSongs() {
         sound.currentTime = 0;
     });
 }
-
